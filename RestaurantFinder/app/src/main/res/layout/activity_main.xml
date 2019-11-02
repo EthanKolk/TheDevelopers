@@ -6,13 +6,63 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
+    <EditText
+        android:id="@+id/username_Text"
+        android:layout_width="220dp"
+        android:layout_height="85dp"
+        android:layout_marginTop="104dp"
+        android:ems="10"
+        android:hint="@string/Username_Hint"
+        android:importantForAutofill="no"
+        android:inputType="textPersonName"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/password_Text"
+        android:layout_width="216dp"
+        android:layout_height="89dp"
+        android:layout_marginTop="48dp"
+        android:ems="10"
+        android:hint="@string/Password_hint"
+        android:importantForAutofill="no"
+        android:inputType="textPassword"
+        app:layout_constraintEnd_toEndOf="@+id/username_Text"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="@+id/username_Text"
+        app:layout_constraintTop_toBottomOf="@+id/username_Text" />
+
+    <Button
+        android:id="@+id/button"
+        android:layout_width="189dp"
+        android:layout_height="111dp"
+        android:layout_marginTop="132dp"
+        android:onClick="LogIn"
+        android:text="@string/login"
+        app:layout_constraintEnd_toEndOf="@+id/username_Text"
+        app:layout_constraintHorizontal_bias="0.516"
+        app:layout_constraintStart_toStartOf="@+id/username_Text"
+        app:layout_constraintTop_toBottomOf="@+id/password_Text" />
+
+    <EditText
+        android:id="@+id/error_text"
+        android:layout_width="311dp"
+        android:layout_height="61dp"
+        android:layout_marginTop="44dp"
+        android:clickable="false"
+        android:ems="10"
+        android:focusable="false"
+        android:hint="@string/Login_Fail_Hint"
+        android:importantForAutofill="no"
+        android:inputType="textPersonName"
+        android:text="@string/Login_Fail"
+        android:textColor="#8F0909"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="@+id/username_Text"
+        app:layout_constraintHorizontal_bias="0.494"
+        app:layout_constraintStart_toStartOf="@+id/username_Text"
+        app:layout_constraintTop_toBottomOf="@+id/password_Text" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
