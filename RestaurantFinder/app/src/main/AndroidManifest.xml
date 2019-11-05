@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="project.restaurantfinder">
 
-    <uses-permission android:name="ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="ACCESS_FINE_LOCATION" />
 
     <application
         android:name=".MyApp"
@@ -13,9 +13,13 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
+            android:name=".SearchActivity"
+            android:label="@string/title_activity_search"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
             android:name=".Main_Page"
             android:label="@string/title_activity_main__page"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

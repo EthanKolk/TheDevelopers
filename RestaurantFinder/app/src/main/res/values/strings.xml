@@ -6,4 +6,5 @@
     <string name="title_activity_main__page">Main_Page</string>
     <string name="Login_Fail">Username or password invalid</string>
     <string name="Login_Fail_Hint">Displays when user creds are invalid</string>
+    <string name="title_activity_search">SearchActivity</string>
 </resources>
