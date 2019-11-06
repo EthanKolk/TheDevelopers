@@ -17,7 +17,7 @@
 
             <fragment
                 android:id="@+id/places_autocomplete_fragment"
-                android:name="com.google.android.libraries.places.widgetAutoCompleteSupportFragment"
+                android:name="com.google.android.libraries.places.widget.AutoCompleteSupportFragment"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"/>
 
