@@ -1,5 +1,7 @@
 package project.restaurantfinder;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 
 import com.google.android.gms.common.api.Status;
@@ -14,6 +16,8 @@ import com.google.android.material.snackbar.Snackbar;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import android.view.View;
 import android.widget.Toast;
@@ -22,6 +26,8 @@ import java.util.Arrays;
 import java.util.List;
 
 public class SearchActivity extends AppCompatActivity {
+
+    private boolean mLocationPermissionGranted;
 
     PlacesClient pc;
     List<Place.Field> pFields = Arrays.asList(Place.Field.ID,
@@ -34,6 +40,8 @@ public class SearchActivity extends AppCompatActivity {
         setContentView(R.layout.activity_search);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        getLocationPermission();
 
         initPlaces();
 
@@ -71,5 +79,18 @@ public class SearchActivity extends AppCompatActivity {
         String apiKey="AIzaSyCTyRlS0MCx4cQ1jw71jMi_SUcapo_vlg8";
         Places.initialize(this, apiKey);
         pc = Places.createClient(this);
+    }
+
+    private void getLocationPermission(){
+        if(ContextCompat.checkSelfPermission(this.getApplicationContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)
+        {
+            mLocationPermissionGranted = true;
+        }
+        else
+        {
+            ActivityCompat.requestPermissions(this, new String[]
+                    {Manifest.permission.ACCESS_FINE_LOCATION},1);// 1 = Permission Request
+        }
     }
 }
