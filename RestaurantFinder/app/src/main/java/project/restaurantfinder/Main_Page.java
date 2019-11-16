@@ -54,12 +54,13 @@ import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 public class Main_Page extends AppCompatActivity {
 
 
-    String ReadURL(){//Method to get information from a google places url
+    String ReadURL(double lat,double lng,int radius){//Method to get information from a google places url
         //This method may cause lock up in low internet areas (can instead use async)
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
-        String urlText="https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=-33.8670522,151.1957362&radius=1500&type=restaurant&keyword=cruise&key=AIzaSyCTyRlS0MCx4cQ1jw71jMi_SUcapo_vlg8";
+        //String urlText="https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=-33.8670522,151.1957362&radius=1000&type=restaurant&keyword=cruise&key=AIzaSyCTyRlS0MCx4cQ1jw71jMi_SUcapo_vlg8";
+        String urlText="https://maps.googleapis.com/maps/api/place/nearbysearch/json?location="+lat+","+lng+"&radius="+radius+"&type=restaurant&keyword=cruise&key=AIzaSyCTyRlS0MCx4cQ1jw71jMi_SUcapo_vlg8";
         URL url;
         String Data="";
         InputStream inputStream=null;
@@ -90,13 +91,13 @@ public class Main_Page extends AppCompatActivity {
     }
 
     class Restaurant{//Holds data about one restaurant
-        String lat,lng,icon,name,id,price,rate,address;
+        String lat,lng,icon,name,price,rate,address;
         Boolean open;
         List<String> types;
-        Restaurant(String lat,String lng,String icon,String name,String id,String price
+        Restaurant(String lat,String lng,String icon,String name,String price
                 ,String rate,String address,Boolean open,List<String> types){
 
-            this.lat=lat;this.lng=lng;this.icon=icon;this.name=name;this.id=id;
+            this.lat=lat;this.lng=lng;this.icon=icon;this.name=name;
             this.price=price;this.rate=rate;this.address=address;this.open=open;
             this.types=types;
         }
@@ -105,11 +106,10 @@ public class Main_Page extends AppCompatActivity {
 
     class RestaurantManager{//Holds all restaurants given
 
-        List<Restaurant> All;
-        void AddPage(String lat,String lng,String icon,String name,String id,String price
+        List<Restaurant> All=new ArrayList<>();
+        void AddPage(String lat,String lng,String icon,String name,String price
                 ,String rate,String address,Boolean open,List<String> types){
-
-            All.add(new Restaurant(lat,lng,icon,name,id,price,rate,address,open,types));
+            All.add(new Restaurant(lat,lng,icon,name,price,rate,address,open,types));
 
         }
 
@@ -121,7 +121,7 @@ public class Main_Page extends AppCompatActivity {
         void FromData(String data){//Creates a restaurant object from a string
             String current="";
             Boolean Start=false;
-            String lat="",lng="",icon="",name="",id="",price="",rate="",address="";
+            String lat="",lng="",icon="",name="",price="",rate="",address="";
             Boolean open=false;
             List<String> types=new ArrayList<String>();
             int len=data.length();
@@ -137,7 +137,7 @@ public class Main_Page extends AppCompatActivity {
                         i++;
 
                     }
-                    //Log.i("SuperGreat",curHead);
+
                     //This one is the big oof
                     if(curHead.equals("lat")&&firstLat){
                         firstLat=false;
@@ -146,36 +146,34 @@ public class Main_Page extends AppCompatActivity {
                             lat+=data.charAt(i);
                             i++;
                         }
+                        Log.i("Super", "Lat"+lat);
 
 
                     }else if(curHead.equals("lng")&&firstLng){
                         firstLng=false;
                         i+=3;
-                        i+=3;
                         while(data.charAt(i)!='}'){
                             lng+=data.charAt(i);
                             i++;
                         }
+                        Log.i("Super", "Lng"+lng);
 
 
                     }else if (curHead.equals("icon")){
-                        i+=4;
+                        i+=5;
                         while(data.charAt(i)!='\"'){
                             icon+=data.charAt(i);
                             i++;
                         }
-                    }else if (curHead.equals("id")){
-                        i+=4;
-                        while(data.charAt(i)!='\"'){
-                            icon+=data.charAt(i);
-                            i++;
-                        }
+                        Log.i("Super", "Icon"+icon);
+
                     }else if (curHead.equals("name")){
-                        i+=4;
+                        i+=5;
                         while(data.charAt(i)!='\"'){
                             name+=data.charAt(i);
                             i++;
                         }
+                        Log.i("Super", "Name"+name);
                     }else if (curHead.equals("open_now")){
                         i+=4;
                         if (data.charAt(i)=='t'){
@@ -183,41 +181,52 @@ public class Main_Page extends AppCompatActivity {
                         }else{
                             open=false;
                         }
-                    }else if (curHead=="place_id"){
+                        Log.i("Super", "open"+data.charAt(i));
+                    }else if (curHead.equals("price_level")){
                         i+=4;
-                        while(data.charAt(i)!='\"'){
-                            id+=data.charAt(i);
+                        while(data.charAt(i)!=','){
+                            price+=data.charAt(i);
                             i++;
                         }
-                    }else if (curHead=="rating"){
-                        i+=3;
+                        Log.i("Super", "Price "+price);
+
+                    } else if (curHead.equals("rating")){
+                        i+=4;
                         while(data.charAt(i)!=','){
                             rate+=data.charAt(i);
                             i++;
                         }
-                    }else if (curHead=="types"){
-                        i+=5;
+                        Log.i("Super", "rate"+rate);
+                    }else if (curHead.equals("types")){
+                        i+=1;
                         String temp="";
                         while (data.charAt(i)!=']') {
                             if (data.charAt(i) == '\"'){
+                                i++;
                                 while (data.charAt(i) != '\"') {
                                     temp += data.charAt(i);
                                     i++;
                                 }
                                 i++;
                                 types.add(temp);
+                                Log.i("Super", "Type"+temp);
                         }
                             i++;
                     }
-                    }else if (curHead=="vicinity"){
+                    }else if (curHead.equals("vicinity")){
                         firstLat=true;
                         firstLng=true;
-                        i+=4;
+                        i+=5;
                         while(data.charAt(i)!='\"'){
                             address+=data.charAt(i);
                             i++;
                         }
                         //Make a new node
+                        Log.i("Super","Ad "+ address);
+                        AddPage(lat,lng,icon,name,price,rate,address,open,types);
+                        lat="";lng="";icon="";name="";price="";rate="";address="";
+
+
                     }
                     //
 
@@ -237,9 +246,6 @@ public class Main_Page extends AppCompatActivity {
 
     }
 
-    //public void registerActivityLifecycleCallbacks(Application.ActivityLifecycleCallbacks callback){}
-
-
     //This gets the user location as a google place
     void GooglePlacesPlace(PlacesClient placesClient) {
 
@@ -249,9 +255,7 @@ public class Main_Page extends AppCompatActivity {
         // Use the builder to create a FindCurrentPlaceRequest.
         FindCurrentPlaceRequest request=FindCurrentPlaceRequest.builder(placeFields).build();
         final List<String> restaurantNames=new ArrayList<String>();
-        // Call findCurrentPlace and handle the response (first check that the user has granted permission).
         if (ContextCompat.checkSelfPermission(this, ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            //Log.i("Help","Have permission");
             placesClient.findCurrentPlace(request).addOnSuccessListener(((response) -> {
 
 
@@ -269,8 +273,7 @@ public class Main_Page extends AppCompatActivity {
         } else {
             int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION=100;
             ActivityCompat.requestPermissions(this,new String[]{ACCESS_FINE_LOCATION},PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
-            //GoogleStuff(placesClient);
-            //Log.i("Help","Error");
+
         }
 
 
@@ -280,11 +283,8 @@ public class Main_Page extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-        //Places.initialize(getApplicationContext(), apiKey);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main__page);
-
-        //Activity currentActivity = ((MyApp)getApplicationContext()).getCurrentActivity() ;
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -298,8 +298,7 @@ public class Main_Page extends AppCompatActivity {
             }
         });
 
-        //PlacesClient googlePlaces=ImportGooglePlaces();
-        String data=ReadURL();
+        String data=ReadURL(-33.8670522,151.1957362,1000);
         RestaurantManager restaurantManager= new RestaurantManager();
         restaurantManager.FromData(data);
 
