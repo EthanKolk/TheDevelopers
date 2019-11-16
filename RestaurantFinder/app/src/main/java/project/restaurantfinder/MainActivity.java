@@ -20,7 +20,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
     }
-
+/*
     //Use to authenticate user creds on login
     public boolean Authenticate(String user,String pass){
 
@@ -87,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
 //        }
 
         return false;
-    }
+    } */
     public void LogIn(View view) {
         Intent intent = new Intent(this, Main_Page.class);
         EditText usernameT = (EditText) findViewById(R.id.username_Text);
