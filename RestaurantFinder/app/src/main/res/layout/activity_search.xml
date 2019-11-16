@@ -7,6 +7,12 @@
     android:layout_height="match_parent"
     tools:context=".SearchActivity">
 
+    <fragment
+        android:id="@+id/map"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -44,22 +50,7 @@
         android:layout_marginEnd="@dimen/fab_margin"
         android:layout_marginRight="@dimen/fab_margin"
         android:layout_marginBottom="@dimen/fab_margin"
-        app:srcCompat="@android:drawable/ic_dialog_email" />
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@id/fab"
-        android:layout_alignParentBottom="true"
-        android:layout_gravity="bottom|end"
-        android:layout_marginStart="@dimen/place_autocomplete_separator_start"
-        android:layout_marginLeft="@dimen/place_autocomplete_separator_start"
-        android:layout_marginTop="@dimen/place_autocomplete_separator_start"
-        android:layout_marginEnd="@dimen/place_autocomplete_separator_start"
-        android:layout_marginRight="@dimen/place_autocomplete_separator_start"
-        android:layout_marginBottom="@dimen/place_autocomplete_button_padding"
-        app:backgroundTint="#4CAF50"
+        android:text="BACK"
         app:srcCompat="@android:drawable/ic_dialog_email" />
 
 </RelativeLayout>
