@@ -5,6 +5,9 @@ import android.app.Activity;
 import android.app.Application;
 import android.content.ComponentName;
 import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 
@@ -45,9 +48,12 @@ import androidx.appcompat.widget.Toolbar;
 import android.view.View;
 
 import android.content.Intent;
+import android.widget.Button;
+import android.widget.TextView;
 
 import java.util.Arrays;
 import java.util.Map;
+import java.util.Random;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
@@ -60,7 +66,7 @@ public class Main_Page extends AppCompatActivity {
         StrictMode.setThreadPolicy(policy);
 
         //String urlText="https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=-33.8670522,151.1957362&radius=1000&type=restaurant&keyword=cruise&key=AIzaSyCTyRlS0MCx4cQ1jw71jMi_SUcapo_vlg8";
-        String urlText="https://maps.googleapis.com/maps/api/place/nearbysearch/json?location="+lat+","+lng+"&radius="+radius+"&type=restaurant&keyword=cruise&key=AIzaSyCTyRlS0MCx4cQ1jw71jMi_SUcapo_vlg8";
+        String urlText="https://maps.googleapis.com/maps/api/place/nearbysearch/json?location="+lat+","+lng+"&radius="+radius+"&type=restaurant&key=AIzaSyCTyRlS0MCx4cQ1jw71jMi_SUcapo_vlg8";
         URL url;
         String Data="";
         InputStream inputStream=null;
@@ -280,6 +286,25 @@ public class Main_Page extends AppCompatActivity {
 
     }
 
+    RestaurantManager restaurantManager= new RestaurantManager();
+
+    public void RandomRest(View view){
+        Random random = new Random();
+        int size=restaurantManager.All.size();
+        int r=random.nextInt(size);
+
+        Button button=(Button)findViewById(R.id.Random);
+        button.setText(restaurantManager.All.get(r).name);
+    }
+    public void RandomRest(){
+        Random random = new Random();
+        int size=restaurantManager.All.size();
+        int r=random.nextInt(size);
+
+        Button button=(Button)findViewById(R.id.Random);
+        button.setText(restaurantManager.All.get(r).name);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -298,9 +323,11 @@ public class Main_Page extends AppCompatActivity {
             }
         });
 
+        //Provide a device location here
         String data=ReadURL(-33.8670522,151.1957362,1000);
-        RestaurantManager restaurantManager= new RestaurantManager();
         restaurantManager.FromData(data);
+        RandomRest();
+
 
     }
 
