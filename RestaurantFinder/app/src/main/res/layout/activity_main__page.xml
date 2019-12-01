@@ -77,4 +77,27 @@
         app:layout_constraintStart_toEndOf="@+id/CurRest"
         app:layout_constraintTop_toTopOf="@+id/CurRest" />
 
+    <EditText
+        android:id="@+id/Radius"
+        android:layout_width="wrap_content"
+        android:layout_height="60dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginBottom="24dp"
+        android:editable="true"
+        android:ems="10"
+        android:inputType="number"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/ChangeRadius"
+        android:layout_width="wrap_content"
+        android:layout_height="60dp"
+        android:onClick="ChangeRadius"
+        android:text="Go"
+        app:layout_constraintBottom_toBottomOf="@+id/Radius"
+        app:layout_constraintStart_toEndOf="@+id/Radius"
+        app:layout_constraintTop_toTopOf="@+id/Radius" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

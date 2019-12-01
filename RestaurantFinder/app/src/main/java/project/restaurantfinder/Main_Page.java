@@ -50,6 +50,7 @@ import android.view.View;
 
 import android.content.Intent;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import java.util.Arrays;
@@ -160,8 +161,7 @@ public class Main_Page extends AppCompatActivity {
         }
 
         void FromData(String data){//Creates a restaurant object from a string
-            String current="";
-            Boolean Start=false;
+            Clear();
             String lat="",lng="",icon="",name="",price="",rate="",address="";
             Boolean open=false;
             List<String> types=new ArrayList<String>();
@@ -377,6 +377,22 @@ public class Main_Page extends AppCompatActivity {
         GoRest(rest);
     }
 
+    String currentLatLng="";
+    void ChangeRadius(int radius){
+        on=0;
+        String data=ReadURL(currentLatLng,radius);
+        restaurantManager.FromData(data);
+        RandomRest();
+        Button button=(Button)findViewById(R.id.CurRest);
+        button.setText(restaurantManager.All.get(on).name);
+
+    }
+
+    public void ChangeRadius(View view){
+        EditText editText=(EditText) findViewById(R.id.Radius);
+        int radius=Integer.parseInt(editText.getText().toString());
+        ChangeRadius(radius);
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -388,6 +404,7 @@ public class Main_Page extends AppCompatActivity {
 
         Intent intent = getIntent();
         String LL=intent.getStringExtra(MainActivity.EXTRA_MESSAGE);
+        currentLatLng=LL;
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
