@@ -13,6 +13,7 @@ import android.os.Bundle;
 
 import android.content.Context;
 //import com.google.android.libraries.places.api.Places;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.api.net.FindCurrentPlaceRequest;
 import com.google.android.libraries.places.api.net.PlacesClient;
@@ -57,16 +58,19 @@ import java.util.Random;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
+
 public class Main_Page extends AppCompatActivity {
 
 
-    String ReadURL(double lat,double lng,int radius){//Method to get information from a google places url
+    public static final String EXTRA_MESSAGE ="Main_Page";
+
+    String ReadURL(String latlng, int radius){//Method to get information from a google places url
         //This method may cause lock up in low internet areas (can instead use async)
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
         //String urlText="https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=-33.8670522,151.1957362&radius=1000&type=restaurant&keyword=cruise&key=AIzaSyCTyRlS0MCx4cQ1jw71jMi_SUcapo_vlg8";
-        String urlText="https://maps.googleapis.com/maps/api/place/nearbysearch/json?location="+lat+","+lng+"&radius="+radius+"&type=restaurant&key=AIzaSyCTyRlS0MCx4cQ1jw71jMi_SUcapo_vlg8";
+        String urlText="https://maps.googleapis.com/maps/api/place/nearbysearch/json?location="+latlng+"&radius="+radius+"&type=restaurant&key=AIzaSyCTyRlS0MCx4cQ1jw71jMi_SUcapo_vlg8";
         URL url;
         String Data="";
         InputStream inputStream=null;
@@ -107,6 +111,27 @@ public class Main_Page extends AppCompatActivity {
             this.price=price;this.rate=rate;this.address=address;this.open=open;
             this.types=types;
         }
+        String GetName(){
+            return name;
+        }
+
+        String GetRaw(){
+            String re;
+            re="Name: "+name+",\nAddress: "+address+",\nPrice: "+price+",\nRating: "+rate+",\nOpen: ";
+            if(open){
+                re=re+"Yes";
+            }else{
+                re=re+"No";
+            }
+            re=re+",\nTypes:\n";
+            if(types.size()>0) {
+                for (String s : types) {
+                    re = re + s + "\n";
+
+                }
+            }
+            return re;
+        }
 
     }
 
@@ -121,6 +146,16 @@ public class Main_Page extends AppCompatActivity {
 
         void Clear(){
             All.clear();
+
+        }
+
+        Restaurant ByName(String name){
+            for (Restaurant r:All){
+                if(r.GetName()==name){
+                    return r;
+                }
+            }
+            return null;
 
         }
 
@@ -152,7 +187,7 @@ public class Main_Page extends AppCompatActivity {
                             lat+=data.charAt(i);
                             i++;
                         }
-                        Log.i("Super", "Lat"+lat);
+                        //Log.i("Super", "Lat"+lat);
 
 
                     }else if(curHead.equals("lng")&&firstLng){
@@ -162,7 +197,7 @@ public class Main_Page extends AppCompatActivity {
                             lng+=data.charAt(i);
                             i++;
                         }
-                        Log.i("Super", "Lng"+lng);
+                        //Log.i("Super", "Lng"+lng);
 
 
                     }else if (curHead.equals("icon")){
@@ -171,7 +206,7 @@ public class Main_Page extends AppCompatActivity {
                             icon+=data.charAt(i);
                             i++;
                         }
-                        Log.i("Super", "Icon"+icon);
+                        //Log.i("Super", "Icon"+icon);
 
                     }else if (curHead.equals("name")){
                         i+=5;
@@ -179,7 +214,7 @@ public class Main_Page extends AppCompatActivity {
                             name+=data.charAt(i);
                             i++;
                         }
-                        Log.i("Super", "Name"+name);
+                        //Log.i("Super", "Name"+name);
                     }else if (curHead.equals("open_now")){
                         i+=4;
                         if (data.charAt(i)=='t'){
@@ -187,14 +222,14 @@ public class Main_Page extends AppCompatActivity {
                         }else{
                             open=false;
                         }
-                        Log.i("Super", "open"+data.charAt(i));
+                        //Log.i("Super", "open"+data.charAt(i));
                     }else if (curHead.equals("price_level")){
                         i+=4;
                         while(data.charAt(i)!=','){
                             price+=data.charAt(i);
                             i++;
                         }
-                        Log.i("Super", "Price "+price);
+                        //Log.i("Super", "Price "+price);
 
                     } else if (curHead.equals("rating")){
                         i+=4;
@@ -202,7 +237,7 @@ public class Main_Page extends AppCompatActivity {
                             rate+=data.charAt(i);
                             i++;
                         }
-                        Log.i("Super", "rate"+rate);
+                        //Log.i("Super", "rate"+rate);
                     }else if (curHead.equals("types")){
                         i+=1;
                         String temp="";
@@ -215,7 +250,7 @@ public class Main_Page extends AppCompatActivity {
                                 }
                                 i++;
                                 types.add(temp);
-                                Log.i("Super", "Type"+temp);
+                                //Log.i("Super", "Type"+temp);
                         }
                             i++;
                     }
@@ -228,15 +263,19 @@ public class Main_Page extends AppCompatActivity {
                             i++;
                         }
                         //Make a new node
-                        Log.i("Super","Ad "+ address);
-                        AddPage(lat,lng,icon,name,price,rate,address,open,types);
+                        //Log.i("Super","Ad "+ address);
+                        AddPage(lat,lng,icon,name,price,rate,address,open,new ArrayList(types));
                         lat="";lng="";icon="";name="";price="";rate="";address="";
+                        types.clear();
 
 
                     }
                     //
 
                 }
+            }
+            if(All.size()==0){
+                AddPage("0","0","0","No Restaurants In This Area","0","0","0",false,null);
             }
         }
 
@@ -252,27 +291,32 @@ public class Main_Page extends AppCompatActivity {
 
     }
 
+    List<LatLng> Locations=new ArrayList<LatLng>();
     //This gets the user location as a google place
     void GooglePlacesPlace(PlacesClient placesClient) {
 
+
         // Use fields to define the data types to return.
-        List<Field> placeFields = Arrays.asList(Field.NAME);
+        List<Field> placeFields = Arrays.asList(Field.LAT_LNG);
 
         // Use the builder to create a FindCurrentPlaceRequest.
         FindCurrentPlaceRequest request=FindCurrentPlaceRequest.builder(placeFields).build();
-        final List<String> restaurantNames=new ArrayList<String>();
+        //final List<String> restaurantNames=new ArrayList<String>();
         if (ContextCompat.checkSelfPermission(this, ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            placesClient.findCurrentPlace(request).addOnSuccessListener(((response) -> {
+            placesClient.findCurrentPlace(request).addOnSuccessListener((response) -> {
 
 
                 for (PlaceLikelihood placeLikelihood : response.getPlaceLikelihoods()) {
                     Place place =placeLikelihood.getPlace();
-                    String name=place.getName();
-                    if(name!=null) {
-                        Log.i("Help", name);
+                    LatLng LL=place.getLatLng();
+                    if(LL!=null) {
+                        Locations.add(LL);
+                        Log.i("Superr", LL.toString());
+
+
                     }
             }
-                })).addOnFailureListener((exception)-> {
+                }).addOnFailureListener((exception)-> {
 
                 }
             );
@@ -283,11 +327,24 @@ public class Main_Page extends AppCompatActivity {
         }
 
 
-
     }
 
     RestaurantManager restaurantManager= new RestaurantManager();
 
+    int on=0;
+    public void Right(View view){
+        on=((on+1)%restaurantManager.All.size());
+        Button button=(Button)findViewById(R.id.CurRest);
+        button.setText(restaurantManager.All.get(on).name);
+    }
+    public void Left(View view){
+        on=((on-1)%restaurantManager.All.size());
+        if (on==-1){
+            on=restaurantManager.All.size()-1;
+        }
+        Button button=(Button)findViewById(R.id.CurRest);
+        button.setText(restaurantManager.All.get(on).name);
+    }
     public void RandomRest(View view){
         Random random = new Random();
         int size=restaurantManager.All.size();
@@ -304,6 +361,21 @@ public class Main_Page extends AppCompatActivity {
         Button button=(Button)findViewById(R.id.Random);
         button.setText(restaurantManager.All.get(r).name);
     }
+    public void GoRest(String name){
+        Restaurant r= restaurantManager.ByName(name);
+        if (r==null){
+            return;
+        }
+        Intent intent = new Intent(this,RestaurantInfo.class);
+        String ex=r.GetRaw();
+        intent.putExtra(EXTRA_MESSAGE,ex);
+        startActivity(intent);
+    }
+    public void GoRest(View view){
+        Button button=(Button)view;
+        String rest=button.getText().toString();
+        GoRest(rest);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -314,6 +386,8 @@ public class Main_Page extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        Intent intent = getIntent();
+        String LL=intent.getStringExtra(MainActivity.EXTRA_MESSAGE);
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -327,11 +401,16 @@ public class Main_Page extends AppCompatActivity {
             }
         });
 
-        //Provide a device location here
-        String data=ReadURL(-33.8670522,151.1957362,1000);
+        //Get Location
+        //GooglePlacesPlace(ImportGooglePlaces());
+        //while(Locations.size()==0){
+
+        //}
+        String data=ReadURL(LL,10000);
         restaurantManager.FromData(data);
         RandomRest();
-
+        Button button=(Button)findViewById(R.id.CurRest);
+        button.setText(restaurantManager.All.get(on).name);
 
     }
 
