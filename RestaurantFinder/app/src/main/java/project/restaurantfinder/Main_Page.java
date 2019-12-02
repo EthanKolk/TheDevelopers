@@ -249,7 +249,9 @@ public class Main_Page extends AppCompatActivity {
                                     i++;
                                 }
                                 i++;
-                                types.add(temp);
+                                String ntemp=temp;
+                                types.add(ntemp);
+                                temp="";
                                 //Log.i("Super", "Type"+temp);
                         }
                             i++;
@@ -391,7 +393,9 @@ public class Main_Page extends AppCompatActivity {
     public void ChangeRadius(View view){
         EditText editText=(EditText) findViewById(R.id.Radius);
         int radius=Integer.parseInt(editText.getText().toString());
-        ChangeRadius(radius);
+        if (radius>0) {
+            ChangeRadius(radius);
+        }
     }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
