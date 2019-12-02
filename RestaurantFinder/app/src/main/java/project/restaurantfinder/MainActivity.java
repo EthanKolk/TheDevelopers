@@ -8,7 +8,6 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 
 import android.content.Intent;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 
@@ -26,8 +25,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
-import static android.provider.AlarmClock.EXTRA_MESSAGE;
-
 
 public class MainActivity extends AppCompatActivity {
 

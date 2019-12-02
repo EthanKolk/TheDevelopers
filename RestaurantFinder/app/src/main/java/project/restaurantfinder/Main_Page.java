@@ -1,17 +1,8 @@
 package project.restaurantfinder;
 
-import android.Manifest;
-import android.app.Activity;
-import android.app.Application;
-import android.content.ComponentName;
 import android.content.pm.PackageManager;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
-import android.os.Build;
 import android.os.Bundle;
 
-import android.content.Context;
 //import com.google.android.libraries.places.api.Places;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.libraries.places.api.model.Place;
@@ -22,7 +13,6 @@ import com.google.android.libraries.places.api.model.PlaceLikelihood;
 import android.os.StrictMode;
 import android.util.Log;
 
-import android.app.ActivityManager;
 import android.content.Intent;
 
 import java.io.BufferedReader;
@@ -35,26 +25,21 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import com.google.android.libraries.places.api.model.Place.Field;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.view.View;
 
-import android.content.Intent;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 
 import java.util.Arrays;
-import java.util.Map;
 import java.util.Random;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
