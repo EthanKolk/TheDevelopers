@@ -268,53 +268,8 @@ public class Main_Page extends AppCompatActivity {
 
     }
 
-    //This is to import the google places api
-    PlacesClient ImportGooglePlaces(){
-        //We should no technically hardcode the apiKey
-        String apiKey="AIzaSyCTyRlS0MCx4cQ1jw71jMi_SUcapo_vlg8";
-        Places.initialize(getApplicationContext(), apiKey);
-        return Places.createClient(this);
-        //
-
-    }
-
-    List<LatLng> Locations=new ArrayList<LatLng>();
-    //This gets the user location as a google place
-    void GooglePlacesPlace(PlacesClient placesClient) {
 
 
-        // Use fields to define the data types to return.
-        List<Field> placeFields = Arrays.asList(Field.LAT_LNG);
-
-        // Use the builder to create a FindCurrentPlaceRequest.
-        FindCurrentPlaceRequest request=FindCurrentPlaceRequest.builder(placeFields).build();
-        //final List<String> restaurantNames=new ArrayList<String>();
-        if (ContextCompat.checkSelfPermission(this, ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            placesClient.findCurrentPlace(request).addOnSuccessListener((response) -> {
-
-
-                for (PlaceLikelihood placeLikelihood : response.getPlaceLikelihoods()) {
-                    Place place =placeLikelihood.getPlace();
-                    LatLng LL=place.getLatLng();
-                    if(LL!=null) {
-                        Locations.add(LL);
-                        Log.i("Superr", LL.toString());
-
-
-                    }
-            }
-                }).addOnFailureListener((exception)-> {
-
-                }
-            );
-        } else {
-            int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION=100;
-            ActivityCompat.requestPermissions(this,new String[]{ACCESS_FINE_LOCATION},PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
-
-        }
-
-
-    }
 
     RestaurantManager restaurantManager= new RestaurantManager();
 
@@ -407,11 +362,7 @@ public class Main_Page extends AppCompatActivity {
             }
         });
 
-        //Get Location
-        //GooglePlacesPlace(ImportGooglePlaces());
-        //while(Locations.size()==0){
 
-        //}
         String data=ReadURL(LL,10000);
         restaurantManager.FromData(data);
         RandomRest();

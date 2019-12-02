@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 
@@ -20,9 +21,20 @@ import com.google.android.libraries.places.api.model.PlaceLikelihood;
 import com.google.android.libraries.places.api.net.FindCurrentPlaceRequest;
 import com.google.android.libraries.places.api.net.PlacesClient;
 
+import java.io.BufferedReader;
+import java.io.File;
+
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Scanner;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
@@ -149,8 +161,65 @@ public class MainActivity extends AppCompatActivity {
         return false;
     } */
 
+    String Encrypt(String plain){//Does nothing, but could implement encryption
+        return plain;//Put encryption scheme here. Preferably a hash. Must be one that always
+                        //returns the same value
+
+    }
+    Boolean FileHandle(String user, String pass) throws IOException {
+        //Get data form this file
+        FileInputStream favs=this.openFileInput((user));
+        InputStreamReader iSR=new InputStreamReader(favs);
+        BufferedReader bR= new BufferedReader(iSR);
+        String temp= bR.readLine();
+
+        //Store data in this file
+        FileOutputStream cur=this.openFileOutput("CurrentFavs", Context.MODE_PRIVATE);
+        String content=user+"\n";
+        if(Encrypt(pass).equals(temp)){
+            while(temp!=null) {
+                //Add to current file
+                content += temp;
+                temp = bR.readLine();
+
+
+            }
+            cur.write(content.getBytes());
+            cur.close();
+            favs.close();
+            return true;
+        }
+
+        return false;
+    }
+
+    public void CreateAccount(View view){
+        EditText usernameT = (EditText) findViewById(R.id.username_Text);
+        String username = usernameT.getText().toString();
+        EditText passwordT = (EditText) findViewById(R.id.password_Text);
+        String password = passwordT.getText().toString();
+
+        try(FileOutputStream usr=this.openFileOutput(Encrypt(username),Context.MODE_PRIVATE)){
+            TextView error = findViewById(R.id.error_text);
+            error.setVisibility(View.INVISIBLE);
+            usr.write((Encrypt(password)+"\n").getBytes());
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
     Boolean Authenticate(String user,String pass){
-        return true;
+        if(user.equals("admin")&&pass.equals("pass")){//Backdoor for admin
+            return true;
+        }
+        try{
+             return FileHandle(user,pass);
+
+        } catch (Exception e) {
+            return false;
+        }
+
     }
     public void LogIn(View view) {
         Intent intent = new Intent(this, Main_Page.class);
