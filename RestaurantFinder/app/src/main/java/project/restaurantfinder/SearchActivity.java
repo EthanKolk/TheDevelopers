@@ -3,6 +3,7 @@ package project.restaurantfinder;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
 
@@ -15,6 +16,8 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.Task;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
@@ -37,10 +40,13 @@ public class SearchActivity extends FragmentActivity implements OnMapReadyCallba
 
     private boolean mLocationPermissionGranted;
 
+    Polyline polyline;
     PlacesClient pc;
     List<Place.Field> pFields = Arrays.asList(Place.Field.ID,
             Place.Field.NAME, Place.Field.ADDRESS);
     AutocompleteSupportFragment pFragment;
+
+    Location destination;
 
     Location current;
     FusedLocationProviderClient fusedLocationProviderClient;
@@ -52,6 +58,14 @@ public class SearchActivity extends FragmentActivity implements OnMapReadyCallba
         setContentView(R.layout.activity_search);
         //Toolbar toolbar = findViewById(R.id.toolbar);
         //setSupportActionBar(toolbar);
+
+        //If passed longitue / lattidude information
+        Intent getIntent = getIntent();
+        if(getIntent.getExtras() != null)
+        {
+            destination.setLatitude( getIntent.getFloatExtra("Latitude", 0));
+            destination.setLongitude( getIntent.getFloatExtra("Longitude", 0));
+        }
 
         getLocationPermission();
 
@@ -132,9 +146,32 @@ public class SearchActivity extends FragmentActivity implements OnMapReadyCallba
     public void onMapReady(GoogleMap googleMap) {
         LatLng latLng = new LatLng(current.getLatitude(), current.getLongitude());
         MarkerOptions markerOptions = new MarkerOptions().position(latLng).title("You Are Here");
-        googleMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
-        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng,4));
-        googleMap.addMarker(markerOptions);
+        MarkerOptions markerOptions2;
+
+        //If there is a destination
+        if(destination != null)
+        {
+            LatLng newLatLng = new LatLng(destination.getLatitude(), destination.getLongitude());
+            markerOptions2 = new MarkerOptions().position(newLatLng).title("You Want To Go Here");
+
+            LatLng avgLatLng = new LatLng(destination.getLatitude() + current.getLatitude()/2,
+                    destination.getLongitude() + current.getLongitude()/2);
+
+            googleMap.animateCamera(CameraUpdateFactory.newLatLng(avgLatLng));
+            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng,4));
+            googleMap.addMarker(markerOptions);
+            googleMap.addMarker(markerOptions2);
+
+            //Create line
+            polyline = googleMap.addPolyline(new PolylineOptions()
+                    .add(latLng, newLatLng).width(5).color(Color.BLUE));
+        }
+        else // Just move to current location
+        {
+            googleMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
+            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng,4));
+            googleMap.addMarker(markerOptions);
+        }
     }
 
     @Override
