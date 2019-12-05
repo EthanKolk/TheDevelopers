@@ -30,6 +30,8 @@ import androidx.core.content.ContextCompat;
 import com.google.android.libraries.places.api.model.Place.Field;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -43,6 +45,7 @@ import java.util.Arrays;
 import java.util.Random;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
+import static com.google.android.libraries.places.internal.lf.r;
 
 
 public class Main_Page extends AppCompatActivity {
@@ -311,16 +314,44 @@ public class Main_Page extends AppCompatActivity {
         Intent intent = new Intent(this,RestaurantInfo.class);
         String ex=r.GetRaw();
         intent.putExtra(EXTRA_MESSAGE,ex);
-        System.out.println(r.lat);
-        System.out.println(r.lng);
-        intent.putExtra("Latitude",r.lat.toString());
-        intent.putExtra("Longitude",r.lng.toString());
         startActivity(intent);
     }
     public void GoRest(View view){
         Button button=(Button)view;
         String rest=button.getText().toString();
         GoRest(rest);
+    }
+    public void Favorites(View view) {
+        Button button = (Button) findViewById(R.id.AddFav);
+        DatabaseReference reff;
+        reff = FirebaseDatabase.getInstance().getReference().child("");
+        String favorite;
+        favorite = (restaurantManager.All.get(on).name);
+        Restaurant r= restaurantManager.ByName(favorite);
+        if (r==null){
+            return;
+        }
+
+        String  name,price,rate,address;
+        name=r.name;
+        price = r.price;
+        rate= r.rate;
+        address = r.address;
+
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+
+
+
+                reff.push().setValue(r);
+            }
+
+        });
+
+
+
     }
 
     String currentLatLng="";
@@ -357,10 +388,6 @@ public class Main_Page extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                 //       .setAction("Action", null).show();
-
-                //Go To Map
                 Intent intent = new Intent(getApplicationContext(), SearchActivity.class);
                 startActivity(intent);
             }

@@ -12,7 +12,7 @@
         android:layout_height="85dp"
         android:layout_marginTop="104dp"
         android:ems="10"
-        android:hint="@string/Username_Hint"
+        android:hint="Email"
         android:importantForAutofill="no"
         android:inputType="textPersonName"
         app:layout_constraintEnd_toEndOf="parent"
@@ -37,9 +37,8 @@
     <Button
         android:id="@+id/button"
         android:layout_width="189dp"
-        android:layout_height="111dp"
-        android:layout_marginTop="94dp"
-        android:onClick="LogIn"
+        android:layout_height="50dp"
+        android:layout_marginTop="108dp"
         android:text="@string/login"
         app:layout_constraintEnd_toEndOf="@+id/username_Text"
         app:layout_constraintHorizontal_bias="0.516"
@@ -65,16 +64,27 @@
         app:layout_constraintStart_toStartOf="@+id/username_Text"
         app:layout_constraintTop_toBottomOf="@+id/password_Text" />
 
-    <Button
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:layout_marginTop="180dp"
+        android:text="Don't have an account?"
+        app:layout_constraintEnd_toEndOf="@+id/username_Text"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/username_Text"
+        app:layout_constraintTop_toBottomOf="@+id/password_Text" />
+
+    <TextView
         android:id="@+id/CreateAccount"
-        android:layout_width="327dp"
-        android:layout_height="44dp"
-        android:layout_marginTop="24dp"
-        android:onClick="CreateAccount"
-        android:text="Create Account"
-        app:layout_constraintEnd_toEndOf="@+id/button"
-        app:layout_constraintHorizontal_bias="0.442"
-        app:layout_constraintStart_toStartOf="@+id/button"
-        app:layout_constraintTop_toBottomOf="@+id/button" />
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="180dp"
+        android:text="Sign up"
+        app:layout_constraintEnd_toEndOf="@+id/username_Text"
+        app:layout_constraintHorizontal_bias="0.913"
+        app:layout_constraintStart_toStartOf="@+id/username_Text"
+        app:layout_constraintTop_toBottomOf="@+id/password_Text" />/>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

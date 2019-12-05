@@ -28,6 +28,10 @@
             android:name=".Main_Page"
             android:label="@string/title_activity_main__page"
             android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".CreateAccount"
+            android:label="CreateAccount"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
