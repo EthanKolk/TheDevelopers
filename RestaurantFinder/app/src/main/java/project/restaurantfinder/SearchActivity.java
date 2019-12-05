@@ -72,6 +72,9 @@ public class SearchActivity extends FragmentActivity implements OnMapReadyCallba
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
+
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
         //Toolbar toolbar = findViewById(R.id.toolbar);
         //setSupportActionBar(toolbar);
 
@@ -85,7 +88,7 @@ public class SearchActivity extends FragmentActivity implements OnMapReadyCallba
 
         getLocationPermission();
 
-        initPlaces();
+        //initPlaces();
 
         setupAutoComplete();
 
@@ -141,9 +144,9 @@ public class SearchActivity extends FragmentActivity implements OnMapReadyCallba
     //initializing stuff
     private void initPlaces()
     {
-        String apiKey="AIzaSyCTyRlS0MCx4cQ1jw71jMi_SUcapo_vlg8";
-        Places.initialize(this, apiKey);
-        pc = Places.createClient(this);
+        //String apiKey="AIzaSyCTyRlS0MCx4cQ1jw71jMi_SUcapo_vlg8";
+        //Places.initialize(this, apiKey);
+       // pc = Places.createClient(this);
     }
 
     //Before anything else, make sure we have permissions
@@ -164,9 +167,9 @@ public class SearchActivity extends FragmentActivity implements OnMapReadyCallba
     @Override
     public void onMapReady(GoogleMap googleMap) {
         map = googleMap;
-        LatLng latLng = new LatLng(current.getLatitude(), current.getLongitude());
-        MarkerOptions markerOptions = new MarkerOptions().position(latLng).title("You Are Here");
-        MarkerOptions markerOptions2;
+        /*//LatLng latLng = new LatLng(current.getLatitude(), current.getLongitude());
+        //MarkerOptions markerOptions = new MarkerOptions().position(latLng).title("You Are Here");
+        //MarkerOptions markerOptions2;
 
         //If there is a destination
         if(destination != null)
@@ -195,10 +198,10 @@ public class SearchActivity extends FragmentActivity implements OnMapReadyCallba
         }
         else // Just move to current location
         {
-            googleMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
-            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng,4));
-            googleMap.addMarker(markerOptions);
-        }
+           // googleMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
+           // googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng,4));
+            //googleMap.addMarker(markerOptions);
+        }*/
     }
 
     // Code for fetching, parsing, and drawing routes from:
