@@ -122,7 +122,7 @@ public class SearchActivity extends FragmentActivity implements OnMapReadyCallba
 
     private void setupAutoComplete()
     {
-        pFragment = (AutocompleteSupportFragment) getSupportFragmentManager().findFragmentById(R.id.places_autocomplete_fragment);
+        /*pFragment = (AutocompleteSupportFragment) getSupportFragmentManager().findFragmentById(R.id.places_autocomplete_fragment);
         assert pFragment != null;
         pFragment.setPlaceFields(pFields);
         pFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
@@ -135,7 +135,7 @@ public class SearchActivity extends FragmentActivity implements OnMapReadyCallba
             public void onError(@NonNull Status status) {
                 Toast.makeText(SearchActivity.this, ""+status.getStatusMessage(), Toast.LENGTH_SHORT).show();
             }
-        });
+        });*/
     }
 
     //initializing stuff

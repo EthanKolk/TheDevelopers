@@ -22,13 +22,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <fragment
-                android:id="@+id/places_autocomplete_fragment"
-                android:name="com.google.android.gms.location.places.ui.SupportPlaceAutoCompleteFragment"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                tools:layout="@layout/place_autocomplete_fragment" />
-
         </LinearLayout>
 
     </ScrollView>
