@@ -8,8 +8,8 @@
 
     <TextView
         android:id="@+id/RestInfo"
-        android:layout_width="333dp"
-        android:layout_height="498dp"
+        android:layout_width="339dp"
+        android:layout_height="484dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.495"
@@ -19,10 +19,22 @@
 
     <Button
         android:id="@+id/AddFav"
-        android:layout_width="325dp"
-        android:layout_height="97dp"
+        android:layout_width="319dp"
+        android:layout_height="77dp"
         android:text="Add To Favorites"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/RestInfo" />
+
+    <Button
+        android:id="@+id/ToMap"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="8dp"
+        android:text="Set Route"
+        app:layout_constraintBottom_toTopOf="@+id/AddFav"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/RestInfo" />

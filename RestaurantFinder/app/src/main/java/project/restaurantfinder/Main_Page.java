@@ -311,6 +311,10 @@ public class Main_Page extends AppCompatActivity {
         Intent intent = new Intent(this,RestaurantInfo.class);
         String ex=r.GetRaw();
         intent.putExtra(EXTRA_MESSAGE,ex);
+        System.out.println(r.lat);
+        System.out.println(r.lng);
+        intent.putExtra("Latitude",r.lat.toString());
+        intent.putExtra("Longitude",r.lng.toString());
         startActivity(intent);
     }
     public void GoRest(View view){

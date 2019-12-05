@@ -47,4 +47,4 @@ dependencies {
 
     implementation 'com.karumi:dexter:5.0.0'
 }
-apply plugin: 'com.google.gms.google-services'
+

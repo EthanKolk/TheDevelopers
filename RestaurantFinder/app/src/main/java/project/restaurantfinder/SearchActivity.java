@@ -10,6 +10,7 @@ import android.os.Bundle;
 
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -19,6 +20,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
@@ -80,20 +82,27 @@ public class SearchActivity extends FragmentActivity implements OnMapReadyCallba
 
         //If passed longitue / lattidude information
         Intent getIntent = getIntent();
+        destination = new Location("x");
         if(getIntent.getExtras() != null)
         {
-            destination.setLatitude( getIntent.getFloatExtra("Latitude", 0));
-            destination.setLongitude( getIntent.getFloatExtra("Longitude", 0));
+
+            double la = Double.parseDouble(getIntent.getStringExtra("Latitude"));
+            double lo = Double.parseDouble(getIntent.getStringExtra("Longitude"));
+            System.out.println(la);
+            System.out.println(lo);
+            destination.setLatitude(la);
+            destination.setLongitude(lo);
         }
+
+        //Get last known position
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+        fetchLastLocation();
 
         getLocationPermission();
 
         //initPlaces();
 
         setupAutoComplete();
-
-        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
-        fetchLastLocation();
 
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(view -> {
@@ -113,12 +122,42 @@ public class SearchActivity extends FragmentActivity implements OnMapReadyCallba
             if(location != null)
             {
                 current = location;
-                Toast.makeText(getApplicationContext(), current.getLatitude() +""+
-                        current.getLongitude(), Toast.LENGTH_SHORT).show();
-                SupportMapFragment supportMapFragment = (SupportMapFragment)
-                        getSupportFragmentManager().findFragmentById(R.id.map);
-                assert supportMapFragment != null;
-                supportMapFragment.getMapAsync(SearchActivity.this);
+                LatLng latLng = new LatLng(current.getLatitude(), current.getLongitude());
+                MarkerOptions markerOptions = new MarkerOptions().position(latLng).title("You Are Here");
+                MarkerOptions markerOptions2;
+
+                //If there is a destination
+                if(destination != null)
+                {
+                    LatLng newLatLng = new LatLng(destination.getLatitude(), destination.getLongitude());
+                    markerOptions2 = new MarkerOptions().position(newLatLng).title("You Want To Go Here");
+
+                    LatLng avgLatLng = new LatLng(destination.getLatitude() + current.getLatitude()/2,
+                            destination.getLongitude() + current.getLongitude()/2);
+
+                    map.animateCamera(CameraUpdateFactory.newLatLng(avgLatLng));
+                    map.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng,4));
+                    map.addMarker(markerOptions);
+                    map.addMarker(markerOptions2);
+
+                    String url = getUrl(latLng, newLatLng);
+
+                    FetchUrl fetchUrl = new FetchUrl();
+
+                    // Start downloading json data from Google Directions API
+                    fetchUrl.execute(url);
+
+                    //Create line
+                    polyline = map.addPolyline(new PolylineOptions()
+                            .add(latLng, newLatLng).width(5).color(Color.BLACK));
+                }
+                else // Just move to current location
+                {
+                    map.animateCamera(CameraUpdateFactory.newLatLng(latLng));
+                    map.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng,4));
+                    map.addMarker(markerOptions);
+                }
+
             }
         });
     }
@@ -144,7 +183,7 @@ public class SearchActivity extends FragmentActivity implements OnMapReadyCallba
     //initializing stuff
     private void initPlaces()
     {
-        //String apiKey="AIzaSyCTyRlS0MCx4cQ1jw71jMi_SUcapo_vlg8";
+        //String apiKey=;
         //Places.initialize(this, apiKey);
        // pc = Places.createClient(this);
     }
@@ -167,41 +206,6 @@ public class SearchActivity extends FragmentActivity implements OnMapReadyCallba
     @Override
     public void onMapReady(GoogleMap googleMap) {
         map = googleMap;
-        /*//LatLng latLng = new LatLng(current.getLatitude(), current.getLongitude());
-        //MarkerOptions markerOptions = new MarkerOptions().position(latLng).title("You Are Here");
-        //MarkerOptions markerOptions2;
-
-        //If there is a destination
-        if(destination != null)
-        {
-            LatLng newLatLng = new LatLng(destination.getLatitude(), destination.getLongitude());
-            markerOptions2 = new MarkerOptions().position(newLatLng).title("You Want To Go Here");
-
-            LatLng avgLatLng = new LatLng(destination.getLatitude() + current.getLatitude()/2,
-                    destination.getLongitude() + current.getLongitude()/2);
-
-            googleMap.animateCamera(CameraUpdateFactory.newLatLng(avgLatLng));
-            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng,4));
-            googleMap.addMarker(markerOptions);
-            googleMap.addMarker(markerOptions2);
-
-            String url = getUrl(latLng, newLatLng);
-
-            FetchUrl fetchUrl = new FetchUrl();
-
-            // Start downloading json data from Google Directions API
-            fetchUrl.execute(url);
-
-            //Create line
-            polyline = googleMap.addPolyline(new PolylineOptions()
-                    .add(latLng, newLatLng).width(5).color(Color.BLACK));
-        }
-        else // Just move to current location
-        {
-           // googleMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
-           // googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng,4));
-            //googleMap.addMarker(markerOptions);
-        }*/
     }
 
     // Code for fetching, parsing, and drawing routes from:
@@ -241,11 +245,13 @@ public class SearchActivity extends FragmentActivity implements OnMapReadyCallba
                 //Nothing
             } finally {
                 try {
-                    iStream.close();
+                    if(iStream != null)
+                        iStream.close();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                urlConnection.disconnect();
+                if (urlConnection != null)
+                    urlConnection.disconnect();
             }
             return data;
         }
@@ -291,22 +297,23 @@ public class SearchActivity extends FragmentActivity implements OnMapReadyCallba
             ArrayList<LatLng> points;
             PolylineOptions lineOptions = null;
 
-            for (int i = 0; i < result.size(); i++)
+            if(result != null)
             {
-                points = new ArrayList<>();
-                lineOptions = new PolylineOptions();
-                List<HashMap<String, String>> path = result.get(i);
-                for (int j = 0; j < path.size(); j++)
-                {
-                    HashMap<String, String> point = path.get(j);
-                    double lat = Double.parseDouble(Objects.requireNonNull(point.get("lat")));
-                    double lng = Double.parseDouble(Objects.requireNonNull(point.get("lng")));
-                    LatLng position = new LatLng(lat, lng);
-                    points.add(position);
+                for (int i = 0; i < result.size(); i++) {
+                    points = new ArrayList<>();
+                    lineOptions = new PolylineOptions();
+                    List<HashMap<String, String>> path = result.get(i);
+                    for (int j = 0; j < path.size(); j++) {
+                        HashMap<String, String> point = path.get(j);
+                        double lat = Double.parseDouble(Objects.requireNonNull(point.get("lat")));
+                        double lng = Double.parseDouble(Objects.requireNonNull(point.get("lng")));
+                        LatLng position = new LatLng(lat, lng);
+                        points.add(position);
+                    }
+                    lineOptions.addAll(points);
+                    lineOptions.width(5);
+                    lineOptions.color(Color.BLUE);
                 }
-                lineOptions.addAll(points);
-                lineOptions.width(5);
-                lineOptions.color(Color.BLUE);
             }
 
             // Drawing poly lines on the map
@@ -339,7 +346,7 @@ public class SearchActivity extends FragmentActivity implements OnMapReadyCallba
         {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
             {
-                fetchLastLocation();
+                //fetchLastLocation();
             }
         }
     }
